@@ -1,3 +1,13 @@
+const RolesCanManage = {
+  "superAdmin":[
+    "admin","user"
+  ],
+  "admin":[
+    "user"
+  ],
+  "user":[],
+}
+
 const showLevelFilter = (data) => {
   return {
     _id: data._id,
@@ -22,5 +32,9 @@ const useLevelFilter = (data) => {
     updated_at: data.updated_at,
   };
 };
+
+const filterRoleData = (id, role) => {
+  RolesCanManage
+}
 
 module.exports = { showLevelFilter, useLevelFilter };

@@ -1,4 +1,8 @@
-const { getAllUsersS, createUserS } = require("../services/userService");
+const {
+  getAllUsersS,
+  createUserS,
+  findTheLoginUserS,
+} = require("../services/userService");
 
 const createUserC = async (req, res) => {
   if (req.body.password != req.body.confirmPassword) {
@@ -30,7 +34,10 @@ const getMyUserDetailC = async (req, res) => {
     .json({ users: [req.user], status: 200, message: "My User Detail" });
 };
 
-const deleteUserC = (req, res) => {
+const deleteUserC = async (req, res) => {
+  console.log("Delete user", req.user.role, req.params.id);
+  const { users, error } = await findTheLoginUserS(null, null, req.params.id);
+  console.log(users);
   res.status(200).json({ message: "Delete user" });
 };
 
