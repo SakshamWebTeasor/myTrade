@@ -34,7 +34,6 @@ const createDefaultTableData = async () => {
     pan_no: process.env.ADMIN_PAN,
   };
   await createUserS(defaultUser);
-  console.log("admin data created");
 };
 
 module.exports = mongoose;

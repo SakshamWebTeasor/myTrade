@@ -1,5 +1,5 @@
 const { generateToken } = require("../Helper/generateLoginToken");
-const { findTheLoginUserS } = require("../services/userService");
+const { findTheLoginUserS, createUserS } = require("../services/userService");
 
 const sayHiTest = (req, res) => {
   res.status(200).json({ message: "Hello, Express API!" });
@@ -27,4 +27,23 @@ const handleLoginC = async (req, res) => {
   res.status(200).json({ message: "Login successful", token });
 };
 
-module.exports = { sayHiTest, sendDataTest, handleLoginC };
+const handleRegisterC = async (req, res) => {
+  if (req.body.password != req.body.confirmPassword) {
+    return res.status(400).json({
+      status: 400,
+      message: "Password and Confirm Password does not match",
+    });
+  }
+  const { user, error } = await createUserS({
+    ...req.body,
+    role: "user", // by registration method, only user can be created
+    confirmPassword: undefined,
+  });
+  return res.status(error ? 400 : 201).json({
+    user,
+    status: error ? 400 : 201,
+    message: error ? error : "User Created",
+  });
+};
+
+module.exports = { sayHiTest, sendDataTest, handleLoginC, handleRegisterC };

@@ -33,8 +33,4 @@ const useLevelFilter = (data) => {
   };
 };
 
-const filterRoleData = (id, role) => {
-  RolesCanManage
-}
-
-module.exports = { showLevelFilter, useLevelFilter };
+module.exports = { showLevelFilter, useLevelFilter, RolesCanManage };

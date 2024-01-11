@@ -10,6 +10,11 @@ const {
 } = require("../Helper/validFields");
 const Users = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const {
+  createNewMobile,
+  mobileExistenceCheck,
+} = require("./verifiedMobileService");
+const { ObjectId } = require("mongodb");
 
 const requiredFields = [
   "password",
@@ -70,9 +75,9 @@ const sanitizeReq = (body) => {
   return { body, isError: error !== "", error };
 };
 
-const getAllUsersS = async () => {
+const getAllUsersS = async (managebleRoles) => {
   try {
-    const users = await Users.find();
+    const users = await Users.find({ role: { $in: managebleRoles } });
     return { users, error: null };
   } catch (error) {
     return { error, users: null };
@@ -82,11 +87,20 @@ const getAllUsersS = async () => {
 const createUserS = async (body) => {
   try {
     const { body: myBody, error, isError } = sanitizeReq(body);
-    console.log(myBody, isError);
     if (isError) return { error, user: null };
+    const { error: EmailError } = await emailExistenceCheck(myBody.email);
+    if (EmailError) return { user: null, error: EmailError };
+    const { error: MobileError } = await mobileExistenceCheck(myBody.mobile_no);
+    if (MobileError) return { user: null, error: MobileError };
     const user = await Users.create({
       ...myBody,
+      mobile_no: undefined,
       password: await hashPassword(myBody.password),
+    });
+    await createNewMobile({
+      number: myBody.mobile_no,
+      role: myBody.role,
+      user_id: user._id,
     });
     return { user, error: error };
   } catch (error) {
@@ -94,10 +108,29 @@ const createUserS = async (body) => {
   }
 };
 
+const emailExistenceCheck = async (email) => {
+  try {
+    const users = await Users.find({ email }).sort({ _id: -1 }).limit(1);
+    if (users.length > 0) {
+      return {
+        user: users[0],
+        error: "Email already taken",
+      };
+    } else {
+      return {
+        user: null,
+        error: null,
+      };
+    }
+  } catch (error) {
+    return { user: null, error };
+  }
+};
+
 const findTheLoginUserS = async (email, password, _id) => {
   try {
     if (_id) {
-      const user = await Users.findById(_id);
+      const user = await Users.findById(new ObjectId(_id));
       if (!user) {
         return { users: null, error: "User not found" };
       }
@@ -114,8 +147,22 @@ const findTheLoginUserS = async (email, password, _id) => {
       return { users, error: null };
     }
   } catch (error) {
-    return { error, users: null };
+    return { error: "User not found", users: null };
   }
 };
 
-module.exports = { getAllUsersS, findTheLoginUserS, createUserS };
+const deleteTheUser = async (_id) => {
+  try {
+    const deletedUser = await Users.deleteOne({ _id });
+    return { deletedUser, error: null };
+  } catch (error) {
+    return { deletedUser: null, error };
+  }
+};
+
+module.exports = {
+  getAllUsersS,
+  findTheLoginUserS,
+  createUserS,
+  deleteTheUser,
+};

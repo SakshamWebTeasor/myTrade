@@ -7,7 +7,6 @@ const UsersSchema = mongoose.Schema(
     email: { type: String, required: true },
     aadhar_no: { type: String, required: true },
     pan_no: { type: String, required: true },
-    mobile_no: { type: Number, required: true },
     password: { type: String, default: null },
     role: { type: String, default: "user", enum: ["user", "admin", "superAdmin"] },
     created_at: { type: Date, default: Date.now },
