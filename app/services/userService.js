@@ -15,6 +15,7 @@ const {
   mobileExistenceCheck,
 } = require("./verifiedMobileService");
 const { ObjectId } = require("mongodb");
+const { filterUndefinedFields } = require("../Helper/filterUndefinedFields");
 
 const requiredFields = [
   "password",
@@ -27,7 +28,9 @@ const requiredFields = [
   "role",
 ];
 
-const sanitizeReq = (body) => {
+const requiredUpdateFields = ["name", "gender"];
+
+const sanitizeReq = (body, requiredField) => {
   const errors = [];
   const otherError = [];
   const transformField = (field, validator) => {
@@ -37,7 +40,7 @@ const sanitizeReq = (body) => {
     body[field] = value;
   };
 
-  requiredFields.forEach((field) => {
+  requiredField.forEach((field) => {
     if (!body[field]) errors.push(field);
     switch (field) {
       case "password":
@@ -86,7 +89,7 @@ const getAllUsersS = async (managebleRoles) => {
 
 const createUserS = async (body) => {
   try {
-    const { body: myBody, error, isError } = sanitizeReq(body);
+    const { body: myBody, error, isError } = sanitizeReq(body, requiredFields);
     if (isError) return { error, user: null };
     const { error: EmailError } = await emailExistenceCheck(myBody.email);
     if (EmailError) return { user: null, error: EmailError };
@@ -160,9 +163,36 @@ const deleteTheUser = async (_id) => {
   }
 };
 
+const updateTheUser = async (_id, body) => {
+  try {
+    const user_id = new ObjectId(_id);
+    const {
+      body: myBody,
+      error,
+      isError,
+    } = sanitizeReq(body, requiredUpdateFields);
+    if (isError) return { error, user: null };
+    const user = await Users.findById(user_id);
+    if (!user) {
+      return { users: null, error: "User not found" };
+    }
+    let myNewBody = {
+      ...user._doc,
+      ...filterUndefinedFields(myBody),
+      _id: undefined,
+      updated_at: new Date(),
+    };
+    const userUpdate = await Users.updateOne({ _id: user_id }, myNewBody);
+    return { user: userUpdate, error: error };
+  } catch (error) {
+    return { error, user: null };
+  }
+};
+
 module.exports = {
   getAllUsersS,
   findTheLoginUserS,
   createUserS,
   deleteTheUser,
+  updateTheUser,
 };

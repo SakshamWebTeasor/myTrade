@@ -4,6 +4,7 @@ const {
   createUserS,
   findTheLoginUserS,
   deleteTheUser,
+  updateTheUser,
 } = require("../services/userService");
 const { deleteMobile } = require("../services/verifiedMobileService");
 
@@ -19,7 +20,7 @@ const createUserC = async (req, res) => {
     confirmPassword: undefined,
   });
   return res.status(error ? 400 : 201).json({
-    user,
+    users: [user],
     status: error ? 400 : 201,
     message: error ? error : "User Created",
   });
@@ -48,8 +49,26 @@ const deleteUserC = async (req, res) => {
   res.status(200).json({ message: "User Deleted", deletedUser });
 };
 
-const updateUserC = (req, res) => {
-  res.status(200).json({ message: "Update user" });
+const updateUserC = async (req, res) => {
+  const { user, error } = await updateTheUser(req.params.id, {
+    ...req.user,
+    ...req.body,
+    password: undefined,
+    confirmPassword: undefined,
+    role: undefined,
+    aadhar_no: undefined,
+    pan_no: undefined,
+    mobile_no: undefined,
+  });
+  return res.status(error || user.modifiedCount <= 0 ? 400 : 200).json({
+    users: [user],
+    status: error || user.modifiedCount <= 0 ? 400 : 200,
+    message: error
+      ? error
+      : user.modifiedCount > 0
+      ? "User Updated"
+      : "Update Failed",
+  });
 };
 
 module.exports = {
