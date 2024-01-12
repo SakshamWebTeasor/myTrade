@@ -4,10 +4,15 @@ const endpointsFiles = ["../app/routes/index.js"];
 
 const config = {
   info: {
-    title: "Blog API Documentation",
+    title: "Trade API Documentation",
     description: "",
   },
-  tags: [],
+  tags: [
+    {
+      name: "Admin",
+      description: "Endpoints related to admin operations",
+    },
+  ],
   host: "localhost:4000/api",
   schemes: ["http", "https"],
 };

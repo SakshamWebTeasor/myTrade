@@ -1,12 +1,18 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Blog API Documentation",
+    "title": "Trade API Documentation",
     "description": "",
     "version": "1.0.0"
   },
   "host": "localhost:4000/api",
   "basePath": "/",
+  "tags": [
+    {
+      "name": "Admin",
+      "description": "Endpoints related to admin operations"
+    }
+  ],
   "schemes": [
     "http",
     "https"
