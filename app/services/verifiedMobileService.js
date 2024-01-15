@@ -31,6 +31,18 @@ const mobileExistenceCheck = async (number) => {
     }
 }
 
+const findUserMobile = async (_id) => {
+  try {
+    const mobileDetails = await verifiedNumber
+      .find({ user_id: _id })
+      .sort({ createdAt: -1 })
+      .limit(1);
+    return { mobileDetails, error: null };
+  } catch (error) {
+    return { mobileDetails: null, error };
+  }
+}
+
 const findMobile = async (number) => {
   try {
     let mobileDetails = await verifiedNumber
@@ -61,4 +73,4 @@ const deleteMobile = async (number) => {
   }
 };
 
-module.exports = { createNewMobile, findMobile, deleteMobile, mobileExistenceCheck };
+module.exports = { createNewMobile, findMobile, deleteMobile, mobileExistenceCheck, findUserMobile };

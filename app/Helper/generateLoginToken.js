@@ -3,11 +3,12 @@ const secretKey = process.env.SECRET_KEY || "12rtu20@s";
 const jwt = require("jsonwebtoken");
 const { showLevelFilter } = require("./filterUserData");
 const bcrypt = require("bcrypt");
+const { findUserMobile } = require("../services/verifiedMobileService");
 
-function generateToken(user) {
+async function generateToken(user) {
   let theUser = showLevelFilter(user);
   const token = jwt.sign(theUser, secretKey, { expiresIn: "1h" });
-  return token;
+  return { token, theUser: { ...theUser, mobile: user.mobile } };
 }
 
 const hashPassword = async (password) => {

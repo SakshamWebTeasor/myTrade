@@ -130,16 +130,85 @@ const emailExistenceCheck = async (email) => {
   }
 };
 
+const aggToFindCompleteUserById = (_id) => [
+  {
+    $match: {
+      _id: new ObjectId(_id),
+    },
+  },
+  {
+    $lookup: {
+      from: "verifiedmobiles",
+      localField: "_id",
+      foreignField: "user_id",
+      as: "mobiles",
+    },
+  },
+  {
+    $project: {
+      _id: 1,
+      name: 1,
+      gender: 1,
+      email: 1,
+      aadhar_no: 1,
+      pan_no: 1,
+      password: 1,
+      role: 1,
+      created_at: 1,
+      mobile: {
+        $arrayElemAt: ["$mobiles.number", 0],
+      },
+    },
+  },
+];
+
+const aggToFindCompleteUserByEmail = (email) => [
+  {
+    $match: {
+      email,
+    },
+  },
+  {
+    $lookup: {
+      from: "verifiedmobiles",
+      localField: "_id",
+      foreignField: "user_id",
+      as: "mobiles",
+    },
+  },
+  {
+    $project: {
+      _id: 1,
+      name: 1,
+      gender: 1,
+      email: 1,
+      aadhar_no: 1,
+      pan_no: 1,
+      password: 1,
+      role: 1,
+      created_at: 1,
+      mobile: {
+        $arrayElemAt: ["$mobiles.number", 0],
+      },
+    },
+  },
+  {
+    $sort: {
+      _id: -1,
+    },
+  },
+  {
+    $limit: 1,
+  },
+];
+
 const findTheLoginUserS = async (email, password, _id) => {
   try {
     if (_id) {
-      const user = await Users.findById(new ObjectId(_id));
-      if (!user) {
-        return { users: null, error: "User not found" };
-      }
-      return { users: [user], error: null };
+      const user = await Users.aggregate(aggToFindCompleteUserById(_id));
+      return { users: user, error: user.length > 0 ? null : "User not found" };
     } else {
-      const users = await Users.find({ email }).sort({ _id: -1 }).limit(1);
+      const users = await Users.aggregate(aggToFindCompleteUserByEmail(email));
       if (users.length === 0) {
         return { users: null, error: "User not found" };
       } else {
@@ -166,6 +235,7 @@ const deleteTheUser = async (_id) => {
 const updateTheUser = async (_id, body) => {
   try {
     const user_id = new ObjectId(_id);
+    console.log(body);
     const {
       body: myBody,
       error,

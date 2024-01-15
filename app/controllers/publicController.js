@@ -16,15 +16,21 @@ const handleLoginC = async (req, res) => {
     return res.status(400).json({ message: "Email and password are required" });
   }
   const { users, error } = await findTheLoginUserS(email, password);
-  let token;
+  let myUserData;
   if (users) {
-    token = generateToken(users[0]);
+    myUserData = await generateToken(users[0]);
   } else {
     return res
       .status(401)
       .json({ message: "Invalid email or password", error });
   }
-  res.status(200).json({ message: "Login successful", token });
+  res
+    .status(200)
+    .json({
+      message: "Login successful",
+      token: myUserData.token,
+      user: { ...myUserData.theUser, _id: undefined },
+    });
 };
 
 const handleRegisterC = async (req, res) => {

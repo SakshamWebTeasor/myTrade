@@ -39,19 +39,20 @@ const getMyUserDetailC = async (req, res) => {
 
 const deleteUserC = async (req, res) => {
   const { users, error } = await findTheLoginUserS(null, null, req.params.id);
-  if (error) return res.status(400).json({ message: error, users: null });
-  const { error: deleteMobError } = await deleteMobile(users[0].mobile_no);
+  if (error || users.length <= 0) return res.status(400).json({ message: error, status: 400 });
+  const { error: deleteMobError } = await deleteMobile(users[0].mobile);
   if (deleteMobError)
-    return res.status(400).json({ message: deleteMobError, users: null });
+    return res.status(400).json({ message: deleteMobError, status: 400 });
   const { deletedUser, error: deleteUserError } = deleteTheUser(req.params.id);
   if (deleteUserError)
-    return res.status(400).json({ message: deleteUserError, users: null });
-  res.status(200).json({ message: "User Deleted", deletedUser });
+    return res.status(400).json({ message: deleteUserError });
+  res.status(200).json({ message: "User Deleted", deletedUser, status: 200 });
 };
 
 const updateUserC = async (req, res) => {
   const { user, error } = await updateTheUser(req.params.id, {
-    ...req.user,
+    name: undefined,
+    gender: undefined,
     ...req.body,
     password: undefined,
     confirmPassword: undefined,
