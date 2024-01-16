@@ -63,8 +63,9 @@ const authorizeAdmin = async (req, res, next) => {
         message: "Unauthorized, Please login as Admin",
       });
     }
+    console.log(decoded);
     const {
-      users: [user],
+      users: [user]
     } = await findTheLoginUserS(null, null, decoded._id);
     if (user && (user.role === "admin" || user.role === "superAdmin")) {
       req.user = {...useLevelFilter(user), mobile_no:user.mobile};
