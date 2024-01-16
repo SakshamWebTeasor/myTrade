@@ -34,6 +34,7 @@ const handleLoginC = async (req, res) => {
 };
 
 const handleRegisterC = async (req, res) => {
+  const { name, gender, email, aadhar_no, pan_no, mobile_no, password, confirmPassword} = req.body;
   if (req.body.password != req.body.confirmPassword) {
     return res.status(400).json({
       status: 400,
@@ -46,7 +47,7 @@ const handleRegisterC = async (req, res) => {
     confirmPassword: undefined,
   });
   return res.status(error ? 400 : 201).json({
-    user,
+    users:[user],
     status: error ? 400 : 201,
     message: error ? error : "User Created",
   });

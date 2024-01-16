@@ -8,7 +8,7 @@ const { findUserMobile } = require("../services/verifiedMobileService");
 async function generateToken(user) {
   let theUser = showLevelFilter(user);
   const token = jwt.sign(theUser, secretKey, { expiresIn: "1h" });
-  return { token, theUser: { ...theUser, mobile: user.mobile } };
+  return { token, theUser: { ...theUser, mobile_no: user.mobile } };
 }
 
 const hashPassword = async (password) => {
