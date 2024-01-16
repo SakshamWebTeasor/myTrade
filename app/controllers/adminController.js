@@ -9,7 +9,18 @@ const {
 const { deleteMobile } = require("../services/verifiedMobileService");
 
 const createUserC = async (req, res) => {
-  if (req.body.password != req.body.confirmPassword) {
+  const {
+    name,
+    gender,
+    email,
+    aadhar_no,
+    pan_no,
+    mobile_no,
+    role,
+    password,
+    confirmPassword,
+  } = req.body;
+  if (password != confirmPassword) {
     return res.status(400).json({
       status: 400,
       message: "Password and Confirm Password does not match",
@@ -53,6 +64,8 @@ const updateUserC = async (req, res) => {
   const { user, error } = await updateTheUser(req.params.id, {
     name: undefined,
     gender: undefined,
+    name:req.body.name,
+    gender:req.body.gender,
     ...req.body,
     password: undefined,
     confirmPassword: undefined,

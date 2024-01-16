@@ -79,6 +79,24 @@
             "schema": {
               "type": "object",
               "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "gender": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "aadhar_no": {
+                  "example": "any"
+                },
+                "pan_no": {
+                  "example": "any"
+                },
+                "mobile_no": {
+                  "example": "any"
+                },
                 "password": {
                   "example": "any"
                 },
@@ -166,6 +184,27 @@
             "schema": {
               "type": "object",
               "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "gender": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "aadhar_no": {
+                  "example": "any"
+                },
+                "pan_no": {
+                  "example": "any"
+                },
+                "mobile_no": {
+                  "example": "any"
+                },
+                "role": {
+                  "example": "any"
+                },
                 "password": {
                   "example": "any"
                 },
@@ -242,6 +281,21 @@
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "gender": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {

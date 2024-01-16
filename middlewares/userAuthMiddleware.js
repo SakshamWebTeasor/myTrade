@@ -67,7 +67,7 @@ const authorizeAdmin = async (req, res, next) => {
       users: [user],
     } = await findTheLoginUserS(null, null, decoded._id);
     if (user && (user.role === "admin" || user.role === "superAdmin")) {
-      req.user = useLevelFilter(user);
+      req.user = {...useLevelFilter(user), mobile_no:user.mobile};
     } else {
       return res.status(404).json({
         data: {},
