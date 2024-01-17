@@ -7,12 +7,7 @@ const config = {
     title: "Trade API Documentation",
     description: "",
   },
-  tags: [
-    {
-      name: "Admin",
-      description: "Endpoints related to admin operations",
-    },
-  ],
+  tags: [],
   host: "localhost:4000/api",
   schemes: ["http", "https"],
 };

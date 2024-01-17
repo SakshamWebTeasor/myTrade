@@ -7,12 +7,6 @@
   },
   "host": "localhost:4000/api",
   "basePath": "/",
-  "tags": [
-    {
-      "name": "Admin",
-      "description": "Endpoints related to admin operations"
-    }
-  ],
   "schemes": [
     "http",
     "https"

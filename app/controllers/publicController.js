@@ -62,9 +62,12 @@ const handleRegisterC = async (req, res) => {
     role: "user", // by registration method, only user can be created
     confirmPassword: undefined,
   });
+  let myUserData = await generateToken(user);
   return res.status(error ? 400 : 201).json({
     users: [user],
     status: error ? 400 : 201,
+    token: myUserData.token,
+    user: { ...myUserData.theUser, _id: undefined },
     message: error ? "User Creation Failed" : "User Created",
     error: error == "" ? null : error,
   });
